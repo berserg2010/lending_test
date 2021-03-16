@@ -1,0 +1,72 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+
+  {% include 'public/components/head.html' %}
+
+  <title>{% block title %}{% endblock %}</title>
+
+</head>
+<body class="t-body" style="margin:0;">
+
+<header class="header">
+{#  {% include 'public/components/header.html' %}#}
+</header>
+
+{% block content %}{% endblock %}
+
+<footer class="footer">
+{#  {% include 'public/components/footer.html' %}#}
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+{% block script %}{% endblock %}
+
+{#<script src="{% static 'js/scripts.js' %}"></script>#}
+
+<script>
+  {% if form.errors %}
+    showMessage({ status: 'error', message: 'Эл. почта или пароль введены неверно!' })
+  {% endif %}
+</script>
+
+<script>
+
+  function formSubmitHandler(form) {
+
+    const urls_actions = {
+      'request-user-form': 'request-user/',
+      'recover-password': 'recover-password/',
+    }
+
+    const client = axios.create({
+      baseURL: `${window.location.origin}/`,
+      withCredentials: true,
+      xsrfCookieName: 'csrftoken',
+      xsrfHeaderName: 'X-CSRFToken',
+    })
+
+    const formData = new FormData(form)
+
+    client.post(`${urls_actions[form.id]}`, formData)
+      .then(({ data }) => {
+
+        modalHiddenHandler({ force: false })
+        scrollHiddenHandler(false)
+
+        showMessage(data)
+
+        form.reset()
+      })
+      .catch((e) => {
+        console.error(e)
+      })
+  }
+
+</script>
+
+</body>
+</html>
