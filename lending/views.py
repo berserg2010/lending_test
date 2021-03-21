@@ -1,6 +1,7 @@
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny
 
 from .services.mail import send_form_data
 from .serializers import FormDataSerializer
@@ -8,6 +9,7 @@ from .models import Page
 
 
 class IndexView(APIView):
+    permission_classes = (AllowAny, )
     renderer_classes = (TemplateHTMLRenderer, )
     template_name = 'public/index.html'
 
